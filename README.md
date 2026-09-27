@@ -69,8 +69,3 @@ npm run dev
 Opens on `http://localhost:5173`. In dev, API calls to `/api/*` are proxied
 to `http://localhost:5000` automatically (see `vite.config.ts`), so you
 don't need to set `VITE_API_URL` locally.
-
-## 3. Add your resume
-
-Drop your PDF resume at `frontend/public/resume.pdf` — the "Resume" button
-in the nav links to `/resume.pdf` and won't work until that file exists.
