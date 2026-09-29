@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import { ExternalLink, Github } from "lucide-react";
 import studyHive from "@/assets/project-study-hive.jpg";
-import lebeza from "@/assets/project-lebeza.jpg"; // TODO: add this image file
-import regebeya from "@/assets/project-regebeya.jpg"; // TODO: add this image file
-import leaveManagement from "@/assets/project-leave-management.jpg"; // TODO: add this image file
+import lebeza from "@/assets/project-lebeza.jpg";
+import regebeya from "@/assets/project-regebeya.jpg";
+import leaveManagement from "@/assets/project-leave-management.jpg";
 
 const projects = [
   {
@@ -16,60 +16,57 @@ const projects = [
     github: "https://github.com/eskedar12/studyhive-resource_sharing",
   },
   {
-  title: "Lebeza",
-  tag: "Psychiatry Website Redesign",
-  image: lebeza,
-  description:
-    "Redesigned and rebuilt the Lebeza Psychiatry Hospital website with a modern, responsive interface focused on improving user experience, accessibility, and navigation. Reworked the existing website structure and UI to make information about psychiatric services, doctors, and the hospital easier to find and access.",
-  tech: ["React", "Tailwind CSS", "Node.js", "Express.js", "MongoDB"],
-  demo: "https://lebeza-website.onrender.com",
-  github: "https://github.com/eskedar12/Healthcare_website",
-},
- {
-  title: "ReGebeya",
-  tag: "Used Goods Marketplace",
-  image: regebeya,
-  description:
-    "A full-stack used-goods marketplace built for Ethiopia, allowing users to buy and sell second-hand products through detailed listings. Features include user authentication, multi-photo listings, category and location-based search and filtering, favorites, cart, buyer-seller messaging, ratings, notifications, reporting, and online payment integration.",
-  tech: ["React", "Vite", "Tailwind CSS", "Node.js", "Express.js", "PostgreSQL"],
-  demo: "https://regebeya.onrender.com/",
-  github: "https://github.com/eskedar12/marketplace",
-},
+    title: "Lebeza",
+    tag: "Psychiatry Website Redesign",
+    image: lebeza,
+    description: "Redesigned and rebuilt the Lebeza Psychiatry Hospital website with a modern, responsive interface. Focused on accessibility and easier navigation to services, doctors, and hospital information.",
+    tech: ["React", "Tailwind CSS", "Node.js", "Express.js", "MongoDB"],
+    demo: "https://lebeza-website.onrender.com",
+    github: "https://github.com/eskedar12/Healthcare_website",
+  },
   {
-  title: "Leave Management System",
-  tag: "Employee Leave Tracker",
-  image: leaveManagement,
-  description:
-    "A bilingual (English/Amharic) employee leave management system with Ethiopian calendar support, role-based access control, leave requests and approvals, leave balance tracking, employee management, and administrative controls.",
-  tech: ["React", "Node.js", "Express", "Sequelize", "MySQL", "JWT"],
-  demo: "https://lms-frontend-bkom.onrender.com",
-  github: "https://github.com/eskedar12/leave-management-system",
-},
+    title: "ReGebeya",
+    tag: "Used Goods Marketplace",
+    image: regebeya,
+    description: "Full-stack used-goods marketplace built for Ethiopia, letting users buy and sell second-hand products. Features listings, search and filtering, messaging, favorites, and online payments.",
+    tech: ["React", "Vite", "Tailwind CSS", "Node.js", "Express.js", "PostgreSQL"],
+    demo: "https://regebeya.onrender.com/",
+    github: "https://github.com/eskedar12/marketplace",
+  },
+  {
+    title: "Leave Management System",
+    tag: "Employee Leave Tracker",
+    image: leaveManagement,
+    description: "Bilingual (English/Amharic) employee leave management system with Ethiopian calendar support. Features role-based access, leave requests and approvals, and balance tracking.",
+    tech: ["React", "Node.js", "Express", "Sequelize", "MySQL", "JWT"],
+    demo: "https://lms-frontend-bkom.onrender.com",
+    github: "https://github.com/eskedar12/leave-management-system",
+  },
 ];
 
 type Project = (typeof projects)[number];
 
 function ProjectCard({ p }: { p: Project }) {
   return (
-    <article className="group glass rounded-2xl overflow-hidden w-[340px] md:w-[420px] shrink-0 mx-3 hover:glow-primary transition-all">
-      <div className="relative overflow-hidden aspect-[16/10]">
+    <article className="group glass rounded-2xl overflow-hidden w-[340px] md:w-[420px] shrink-0 mx-3 hover:glow-primary transition-all flex flex-col">
+      <div className="relative overflow-hidden aspect-[16/10] bg-surface">
         <img
           src={p.image}
           alt={p.title}
           loading="lazy"
           width={1024}
           height={1024}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />
         <span className="absolute top-3 left-3 text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full bg-background/70 backdrop-blur border border-border text-primary">
           {p.tag}
         </span>
       </div>
-      <div className="p-5">
+      <div className="p-5 flex flex-col flex-1">
         <h3 className="font-display text-xl font-bold mb-2">{p.title}</h3>
-        <p className="text-sm text-muted-foreground leading-relaxed mb-4 line-clamp-2">{p.description}</p>
-        <div className="flex flex-wrap gap-1.5 mb-4">
+        <p className="text-sm text-muted-foreground leading-relaxed mb-4">{p.description}</p>
+        <div className="flex flex-wrap gap-1.5 mb-4 mt-auto">
           {p.tech.slice(0, 4).map((t) => (
             <span key={t} className="text-[10px] font-mono px-2 py-0.5 rounded bg-surface border border-border text-muted-foreground">
               {t}
@@ -105,7 +102,7 @@ function MarqueeRow({ items, duration = 45 }: { items: Project[]; duration?: num
   return (
     <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] group/row">
       <motion.div
-        className="flex w-max"
+        className="flex w-max items-stretch"
         animate={{ x: ["0%", "-50%"] }}
         transition={{ duration, ease: "linear", repeat: Infinity }}
         style={{ animationPlayState: "running" }}
