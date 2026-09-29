@@ -1,10 +1,9 @@
 import { motion } from "framer-motion";
 import { ExternalLink, Github } from "lucide-react";
-import direFoods from "@/assets/project-dire-foods.webp";
-import ecommerce from "@/assets/project-ecommerce.webp";
-import studyHive from "@/assets/project-study-hive.webp";
-import career from "@/assets/career.webp";
-import coffeeShop from "@/assets/coffee.webp";
+import studyHive from "@/assets/project-study-hive.jpg";
+import lebeza from "@/assets/project-lebeza.jpg"; // TODO: add this image file
+import regebeya from "@/assets/project-regebeya.jpg"; // TODO: add this image file
+import leaveManagement from "@/assets/project-leave-management.jpg"; // TODO: add this image file
 
 const projects = [
   {
@@ -17,41 +16,35 @@ const projects = [
     github: "https://github.com/eskedar12/studyhive-resource_sharing",
   },
   {
-    title: "Dire Foods",
-    tag: "Food Delivery Platform",
-    image: direFoods,
-    description: "Full-stack app connecting customers with restaurants in Dire Dawa, Ethiopia. Auth, menu management, cart, orders, and admin dashboard.",
-    tech: ["MongoDB", "Express", "React", "Node.js", "JWT"],
-    demo: "https://food-delivery-app-qfcw.onrender.com",
-    github: "https://github.com/eskedar12/Food-Delivery-App",
-  },
+  title: "Lebeza",
+  tag: "Psychiatry Website Redesign",
+  image: lebeza,
+  description:
+    "Redesigned and rebuilt the Lebeza Psychiatry Hospital website with a modern, responsive interface focused on improving user experience, accessibility, and navigation. Reworked the existing website structure and UI to make information about psychiatric services, doctors, and the hospital easier to find and access.",
+  tech: ["React", "Tailwind CSS", "Node.js", "Express.js", "MongoDB"],
+  demo: "https://lebeza-website.onrender.com",
+  github: "https://github.com/eskedar12/Healthcare_website",
+},
+ {
+  title: "ReGebeya",
+  tag: "Used Goods Marketplace",
+  image: regebeya,
+  description:
+    "A full-stack used-goods marketplace built for Ethiopia, allowing users to buy and sell second-hand products through detailed listings. Features include user authentication, multi-photo listings, category and location-based search and filtering, favorites, cart, buyer-seller messaging, ratings, notifications, reporting, and online payment integration.",
+  tech: ["React", "Vite", "Tailwind CSS", "Node.js", "Express.js", "PostgreSQL"],
+  demo: "https://regebeya.onrender.com/",
+  github: "https://github.com/eskedar12/marketplace",
+},
   {
-    title: "SweetGlam - Habesha Atelier",
-    tag: "E-Commerce Frontend",
-    image: ecommerce,
-    description: "Elegant e-commerce website showcasing Habesha-inspired fashion and handmade products. Features product listing, smooth navigation, and fully responsive design.",
-    tech: ["React", "TypeScript", "Tailwind CSS", "Vite", "shadcn/ui", "TanStack Router"],
-    demo: "https://ecommercewebsite102.netlify.app/",
-    github: "https://github.com/eskedar12/Ecommerce-Website",
-  },
-  {
-    title: "Career Compass",
-    tag: "Job Application Tracker",
-    image: career,
-    description: "Full-stack job application management system. Track applications, update statuses (Applied, Interview, Offer, Rejected, Accepted), and visualize job search progress with interactive dashboards and charts.",
-    tech: ["React", "Node.js", "Express", "MongoDB", "Tailwind CSS", "JWT", "Recharts"],
-    demo: "https://job-tracker-web-ych8.onrender.com",
-    github: "https://github.com/eskedar12/job-tracker",
-  },
-  {
-    title: "Coffee Shop Website",
-    tag: "Modern Cafe Frontend",
-    image: coffeeShop,
-    description: "Modern, responsive coffee shop website featuring elegant UI components, smooth animations, and mobile-first design. Shows menu items and brand identity.",
-    tech: ["React", "TanStack Start", "Tailwind CSS", "TypeScript", "Vite"],
-    demo: "https://coffeeshopwebsite101.netlify.app",
-    github: "https://github.com/eskedar12/coffee_shop_web",
-  },
+  title: "Leave Management System",
+  tag: "Employee Leave Tracker",
+  image: leaveManagement,
+  description:
+    "A bilingual (English/Amharic) employee leave management system with Ethiopian calendar support, role-based access control, leave requests and approvals, leave balance tracking, employee management, and administrative controls.",
+  tech: ["React", "Node.js", "Express", "Sequelize", "MySQL", "JWT"],
+  demo: "https://lms-frontend-bkom.onrender.com",
+  github: "https://github.com/eskedar12/leave-management-system",
+},
 ];
 
 type Project = (typeof projects)[number];
@@ -106,14 +99,14 @@ function ProjectCard({ p }: { p: Project }) {
   );
 }
 
-function MarqueeRow({ items, reverse = false, duration = 40 }: { items: Project[]; reverse?: boolean; duration?: number }) {
+function MarqueeRow({ items, duration = 45 }: { items: Project[]; duration?: number }) {
   // Duplicate items for seamless infinite scroll
   const loop = [...items, ...items];
   return (
     <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] group/row">
       <motion.div
         className="flex w-max"
-        animate={{ x: reverse ? ["-50%", "0%"] : ["0%", "-50%"] }}
+        animate={{ x: ["0%", "-50%"] }}
         transition={{ duration, ease: "linear", repeat: Infinity }}
         style={{ animationPlayState: "running" }}
       >
@@ -126,10 +119,6 @@ function MarqueeRow({ items, reverse = false, duration = 40 }: { items: Project[
 }
 
 export function Projects() {
-  // Split into 3 and 2 (first 3, remaining 2)
-  const rowA = projects.slice(0, 3);
-  const rowB = projects.slice(3);
-
   return (
     <section id="projects" className="px-6 py-24 overflow-hidden">
       <div className="mx-auto max-w-6xl">
@@ -142,14 +131,13 @@ export function Projects() {
         >
           <p className="text-sm uppercase tracking-[0.2em] text-primary mb-4">Selected work</p>
           <h2 className="font-display text-4xl md:text-5xl font-bold">
-             My <span className="text-gradient">Projects</span>
+            My <span className="text-gradient">Projects</span>
           </h2>
         </motion.div>
       </div>
 
       <div className="space-y-6">
-        <MarqueeRow items={rowA} duration={45} />
-        {rowB.length > 0 && <MarqueeRow items={rowB} reverse duration={50} />}
+        <MarqueeRow items={projects} />
       </div>
     </section>
   );
