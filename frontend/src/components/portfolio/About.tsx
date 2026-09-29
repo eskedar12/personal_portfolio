@@ -25,7 +25,7 @@ function CountUp({ end, suffix = "", duration = 1.6 }: { end: number; suffix?: s
 
 const stats = [
   { num: 2, suffix: "+", label: "Years Experience" },
-  { num: 10, suffix: "+", label: "Projects Completed" },
+  { num: 5, suffix: "+", label: "Projects Completed" },
   { num: 100, suffix: "%", label: "Responsive Design" },
 ];
 
