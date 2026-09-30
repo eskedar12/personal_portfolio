@@ -6,6 +6,11 @@ import contactRoutes from "./routes/contact.js";
 
 const app = express();
 
+// Render (and most hosts) put a reverse proxy in front of the app. Trust the
+// first proxy so req.ip is the real visitor IP, which the contact-form rate
+// limiter relies on. Without this, every visitor shares one rate-limit bucket.
+app.set("trust proxy", 1);
+
 const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:5173")
   .split(",")
   .map((o) => o.trim());

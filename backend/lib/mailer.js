@@ -1,40 +1,67 @@
-import nodemailer from "nodemailer";
+// Best-effort notification email, sent over HTTPS (port 443) so it works on
+// Render's free tier, which blocks SMTP ports 25/465/587.
+//
+// Pick ONE provider by setting its API key in the environment:
+//   Resend: RESEND_API_KEY   (+ optional MAIL_FROM)
+//   Brevo:  BREVO_API_KEY    + BREVO_SENDER_EMAIL (must be a verified sender)
+// Messages are always saved to Postgres first; this never throws, so an email
+// problem can't make a visitor's message get lost.
 
-let transporter = null;
+const TIMEOUT_MS = 10_000;
 
-function getTransporter() {
-  if (transporter) return transporter;
-
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) return null;
-
-  transporter = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port: Number(SMTP_PORT) || 587,
-    secure: Number(SMTP_PORT) === 465,
-    auth: { user: SMTP_USER, pass: SMTP_PASS },
+async function sendWithResend({ to, subject, text, replyTo }) {
+  const from = process.env.MAIL_FROM || "Portfolio Contact Form <onboarding@resend.dev>";
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ from, to: [to], subject, text, reply_to: replyTo }),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
   });
-
-  return transporter;
+  if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
 }
 
-// Best-effort notification email. Contact messages are always saved to
-// MongoDB regardless of whether this succeeds, so a missing/broken SMTP
-// config never causes a visitor's message to be lost.
-export async function notifyNewMessage({ name, email, subject, message }) {
-  const t = getTransporter();
-  if (!t) return { sent: false, reason: "SMTP not configured" };
+async function sendWithBrevo({ to, subject, text, replyTo, replyToName }) {
+  const senderEmail = process.env.BREVO_SENDER_EMAIL;
+  if (!senderEmail) throw new Error("BREVO_SENDER_EMAIL not set");
+  const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      "api-key": process.env.BREVO_API_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      sender: { name: "Portfolio Contact Form", email: senderEmail },
+      to: [{ email: to }],
+      replyTo: { email: replyTo, name: replyToName },
+      subject,
+      textContent: text,
+    }),
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  if (!res.ok) throw new Error(`Brevo ${res.status}: ${await res.text()}`);
+}
 
+export async function notifyNewMessage({ name, email, subject, message }) {
   const to = process.env.CONTACT_NOTIFY_EMAIL;
   if (!to) return { sent: false, reason: "CONTACT_NOTIFY_EMAIL not set" };
 
+  const send = process.env.RESEND_API_KEY
+    ? sendWithResend
+    : process.env.BREVO_API_KEY
+      ? sendWithBrevo
+      : null;
+  if (!send) return { sent: false, reason: "No email provider configured" };
+
   try {
-    await t.sendMail({
-      from: `"Portfolio Contact Form" <${process.env.SMTP_USER}>`,
+    await send({
       to,
-      replyTo: email,
       subject: `New portfolio message: ${subject || "No subject"}`,
       text: `From: ${name} <${email}>\n\n${message}`,
+      replyTo: email,
+      replyToName: name,
     });
     return { sent: true };
   } catch (err) {
