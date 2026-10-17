@@ -47,8 +47,6 @@ Edit `.env`:
 - `ADMIN_KEY` — optional, but if you set it you can read saved messages back
   by calling `GET /api/contact` with an `x-admin-key` header matching it.
 
-Run it:
-
 ```bash
 npm run dev
 ```
