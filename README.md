@@ -62,7 +62,6 @@ cd frontend
 npm install
 cp .env.example .env   # only needed if backend isn't on localhost:5000
 npm run dev
-```
 
 Opens on `http://localhost:5173`. In dev, API calls to `/api/*` are proxied
 to `http://localhost:5000` automatically (see `vite.config.ts`), so you
